@@ -1,0 +1,70 @@
+/* Clean header + nav + status pattern — Blue theme */
+
+.app-shell-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 18px 0;
+}
+
+/* Unified nav bar */
+.app-shell-nav {
+  width: 100%;
+  background: #d0e4f7;   /* light blue */
+  padding: 14px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 12px;
+}
+
+.app-shell-nav .nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.app-shell-logout {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 59, 121, 0.2);
+  background: #e8f0f9;
+  color: #111;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.app-shell-logout:hover {
+  filter: brightness(0.97);
+}
+
+.app-shell-logout:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.app-shell-status {
+  width: 100%;
+}
+
+.app-shell-nav .nav button {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 59, 121, 0.15);
+  background: #e8f0f9;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.app-shell-nav .nav button:hover {
+  filter: brightness(0.97);
+}
+
+.app-shell-nav .nav button.active {
+  background: #ffffff;
+  border-color: rgba(0, 59, 121, 0.25);
+  color: #003b79;
+}

@@ -1,0 +1,179 @@
+:root{
+  --accent: #003b79;
+  --accent-strong: #002d5e;
+  --accent-soft: #d0e4f7;
+
+  --bg: #f4f8fd;
+  --panel: #ffffff;
+  --text: #1b1b1b;
+  --muted: #4a5568;
+
+  --border: #c3d5e8;
+
+  --btn-bg: #e8f0f9;
+  --btn-bg-hover: #d5e5f5;
+  --btn-back-bg: #cbd5e0;
+  --btn-back-hover: #b2c2d4;
+}
+
+/* Base */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+a{ color: inherit; text-decoration: underline; }
+a:hover{ opacity: 0.9; }
+
+/* Layout */
+.app-shell{ min-height: 100vh; }
+.app-container{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app-main{ flex: 1; padding-top: 16px; }
+
+/* Header / Footer */
+.app-header,
+.app-footer{
+  padding: 12px 16px;
+  background: #003b79;
+  color: #ffffff;
+  border-color: rgba(0,0,0,0.12);
+}
+.app-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+}
+.header-title{ display: flex; flex-direction: column; gap: 2px; }
+.header-title h1{ font-size: 18px; margin: 0; font-weight: 800; color: #ffffff; }
+.header-sub{ font-size: 12px; opacity: 0.8; color: #ffffff; }
+.header-meta{ font-size: 12px; opacity: 0.85; color: #ffffff; }
+
+.app-footer{
+  background: #003b79;
+  color: #ffffff;
+  border-top: 1px solid rgba(0,0,0,0.12);
+  font-size: 12px;
+  opacity: 0.9;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.footer-links{ display: flex; gap: 10px; flex-wrap: wrap; }
+.footer-links a{ color: #a8cef0; }
+
+/* Navigation */
+.nav{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,59,121,0.12);
+}
+
+/* Buttons */
+.btn{
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: var(--btn-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease;
+}
+.btn:hover{ background: var(--btn-bg-hover); }
+.btn:active{ transform: translateY(0.5px); }
+.btn:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-back{ background: var(--btn-back-bg); }
+.btn-back:hover{ background: var(--btn-back-hover); }
+
+.btn-primary{
+  background: var(--accent);
+  color: #fff;
+  border-color: rgba(0,0,0,0.08);
+}
+.btn-primary:hover{ opacity: 0.9; }
+
+/* Inputs */
+.input{
+  width: 320px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+}
+.input:focus{
+  outline: none;
+  border-color: #003b79;
+  box-shadow: 0 0 0 3px rgba(0, 59, 121, 0.15);
+}
+
+/* Small UI */
+.badge{
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  background: var(--panel);
+}
+
+.checkbox{ width: 16px; height: 16px; accent-color: var(--accent); }
+
+/* Pagination */
+.pagination{ display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+.pagination-label{ font-size: 13px; color: var(--muted); }
+
+/* Search */
+.searchbar{ display: flex; gap: 10px; align-items: center; }
+
+/* Chips / Tabs */
+.chips{ display: flex; gap: 8px; flex-wrap: wrap; }
+.tabs{ display: flex; gap: 10px; margin-bottom: 14px; }
+
+/* API banner */
+.banner{
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 1px solid;
+}
+.banner-warning{ background: #fff3cd; border-color: #ffe69c; }
+.banner-danger{ background: #f8d7da; border-color: #f5c2c7; color: #842029; }
+.banner-title{ font-weight: 800; margin-bottom: 4px; }
+.banner-text{ font-size: 13px; }
+.banner-meta{ margin-top: 6px; font-size: 12px; opacity: 0.85; }
+
+/* JSON view */
+.json-view{
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: auto;
+  font-size: 12px;
+  line-height: 1.35;
+}

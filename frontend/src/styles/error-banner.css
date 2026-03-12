@@ -1,0 +1,23 @@
+.error-banner{
+  margin-top: 10px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid #f4c7c7;
+  background: #fff6f6;
+  color: #7a1f1f;
+  display:flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.error-banner-title{
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.error-banner-msg{
+  font-size: 13px;
+  word-break: break-word;
+}

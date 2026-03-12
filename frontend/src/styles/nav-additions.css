@@ -1,0 +1,49 @@
+/*
+ * ── Multilevel navigation additions ─────────────────────────────────────────
+ * Add these to your existing stylesheet (e.g. index.css or nav.css).
+ * The .multilevel-nav, .nav-top, .nav-top-tab, .nav-signout classes
+ * are assumed to already exist. Only the subnav bar is new.
+ */
+
+/* Sub-navigation bar — sits directly below the top tab bar */
+.nav-sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px;
+  height: 36px;
+  background: #f3f4f6;          /* slightly lighter than the top bar */
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nav-sub-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-sub-item:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.nav-sub-item--active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Loading state */
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 15px;
+  color: #6b7280;
+}

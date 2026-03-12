@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Multilevel navigation — Blue theme (#003b79)
+   ========================================================================== */
+
+.multilevel-nav {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 59, 121, 0.15);
+}
+
+/* ── Top row ── */
+.nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--accent-soft, #d0e4f7);
+  padding: 10px 14px;
+  gap: 8px;
+}
+
+.nav-top-items {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.nav-top-tab {
+  appearance: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text, #1b1b1b);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-top-tab:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.60);
+  border-color: rgba(0, 59, 121, 0.15);
+}
+
+.nav-top-tab--active,
+.nav-top-tab:disabled {
+  background: #ffffff;
+  border-color: rgba(0, 59, 121, 0.18);
+  color: var(--accent, #003b79);
+  cursor: default;
+  font-weight: 700;
+}
+
+/* Sign out — right-aligned in the top row */
+.nav-signout {
+  appearance: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 59, 121, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text, #1b1b1b);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: background 120ms ease;
+}
+
+.nav-signout:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Sub-row ── */
+.nav-sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(208, 228, 247, 0.40);
+  border-top: 1px solid rgba(0, 59, 121, 0.08);
+  padding: 7px 14px;
+  flex-wrap: wrap;
+}
+
+.nav-sub-tab {
+  appearance: none;
+  padding: 5px 13px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted, #4a5568);
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 100ms ease, border-color 100ms ease, color 100ms ease;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-sub-tab:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 59, 121, 0.12);
+  color: var(--text, #1b1b1b);
+}
+
+.nav-sub-tab--active,
+.nav-sub-tab:disabled {
+  background: rgba(255, 255, 255, 0.80);
+  border-color: rgba(0, 59, 121, 0.15);
+  color: var(--accent, #003b79);
+  font-weight: 700;
+  cursor: default;
+}
+
+/* nav-additions.css sub-items (anchor-based variant) */
+.nav-sub-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 13px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted, #4a5568);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-sub-item:hover {
+  background: rgba(255, 255, 255, 0.65);
+  color: #111827;
+}
+
+.nav-sub-item--active {
+  background: rgba(255, 255, 255, 0.80);
+  color: var(--accent, #003b79);
+  font-weight: 700;
+}
+
+/* Loading state */
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 15px;
+  color: #6b7280;
+}
