@@ -4,7 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>DSpace CRIS Cockpit</title>
+    <script>
+      // Django Config API base URL.
+      // dashboard-config.ts uses this for runtime cluster/dashboard config.
+      // django-client.ts reads VITE_DJANGO_CONFIG_API_BASE_URL (.env.local).
+      // Both must point to the same base: /api/dspace-config
+      window.__DJANGO_CONFIG_API_BASE_URL__ = "/api/dspace-config";
+      window.__CLUSTER_CONFIG_SOURCE__ = "django";
+    </script>
   </head>
   <body>
     <div id="root"></div>

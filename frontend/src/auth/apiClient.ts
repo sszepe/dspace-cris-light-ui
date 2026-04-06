@@ -15,10 +15,7 @@ export class ApiError extends Error {
   url?: string;
   detail?: unknown;
 
-  constructor(
-    message: string,
-    opts?: { status?: number; url?: string; detail?: unknown },
-  ) {
+  constructor(message: string, opts?: { status?: number; url?: string; detail?: unknown }) {
     super(message);
     this.name = "ApiError";
     this.status = opts?.status;
@@ -107,18 +104,11 @@ async function parseBody<T>(res: Response): Promise<T> {
 
   const contentType = res.headers.get("content-type")?.toLowerCase() ?? "";
 
-  if (
-    contentType.includes("application/json") ||
-    text.trim().startsWith("{") ||
-    text.trim().startsWith("[")
-  ) {
+  if (contentType.includes("application/json") || text.trim().startsWith("{") || text.trim().startsWith("[")) {
     try {
       return JSON.parse(text) as T;
     } catch {
-      throw new ApiError("API returned invalid JSON.", {
-        status: res.status,
-        detail: text.slice(0, 400),
-      });
+      throw new ApiError("API returned invalid JSON.", { status: res.status, detail: text.slice(0, 400) });
     }
   }
 
@@ -149,8 +139,8 @@ async function handleError(res: Response, url: string): Promise<never> {
     typeof detail === "object" && detail && "message" in (detail as any)
       ? String((detail as any).message)
       : typeof detail === "object" && detail && "detail" in (detail as any)
-        ? String((detail as any).detail)
-        : `Request failed (${res.status})`;
+      ? String((detail as any).detail)
+      : `Request failed (${res.status})`;
 
   throw new ApiError(message, { status: res.status, url, detail });
 }
@@ -172,10 +162,7 @@ export async function ensureCsrfToken(force = false): Promise<string> {
 
   const csrf = getCsrfToken();
   if (!res.ok || !csrf) {
-    throw new ApiError("Could not obtain CSRF token.", {
-      status: res.status,
-      url,
-    });
+    throw new ApiError("Could not obtain CSRF token.", { status: res.status, url });
   }
 
   return csrf;
@@ -188,7 +175,7 @@ export async function apiFetch<T>(
     body?: unknown;
     headers?: HeadersInit;
     signal?: AbortSignal;
-  },
+  }
 ): Promise<T> {
   const method = opts?.method ?? "GET";
   const url = buildUrl(path);
@@ -221,15 +208,8 @@ export async function apiFetch<T>(
       signal: opts?.signal,
     });
   } catch (error: any) {
-    emit("api:down", {
-      reason: "network",
-      url,
-      error: String(error?.message ?? error),
-    });
-    throw new ApiError("API is unreachable.", {
-      url,
-      detail: String(error?.message ?? error),
-    });
+    emit("api:down", { reason: "network", url, error: String(error?.message ?? error) });
+    throw new ApiError("API is unreachable.", { url, detail: String(error?.message ?? error) });
   }
 
   emit("api:up", { url, status: res.status });

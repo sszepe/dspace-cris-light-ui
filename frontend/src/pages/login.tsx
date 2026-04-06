@@ -1,54 +1,53 @@
-import React from "react";
-import type { LoginCredentials } from "../auth/client";
+import React, { useState } from "react";
 import "../styles/login.css";
 
-type Props = {
-  onLogin: (credentials: LoginCredentials) => Promise<void>;
-};
+interface Props {
+  onLogin: (username: string, password: string) => Promise<void>;
+}
 
 export function LoginPage({ onLogin }: Props) {
-  const [user, setUser]         = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [error, setError]       = React.useState<string | null>(null);
-  const [loading, setLoading]   = React.useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setSubmitting(true);
+
     try {
-      await onLogin({ user, password });
+      await onLogin(username.trim(), password);
     } catch (err: any) {
       setError(err?.message ?? "Login failed");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
-  };
+  }
 
   return (
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
           <div className="login-title">Sign in</div>
-          <div className="login-subtitle">Use your DSpace CRIS account</div>
+          <div className="login-subtitle">Use your archive account</div>
         </div>
 
         {error && (
-            <div className="login-error" role="alert">
-              {error}
-            </div>
-          )}
+          <div className="login-error" role="alert">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="login-form" aria-label="login-form">
-            <label className="login-label">
+        <form onSubmit={onSubmit} className="login-form" aria-label="login-form">
+          <label className="login-label">
             Username
             <input
               className="login-input"
-              type="text"
-              value={user}
-              onChange={(e) => setUser(e.target.value)}
               autoComplete="username"
-              placeholder="e.g. researcher"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. archivist"
               required
             />
           </label>
@@ -58,20 +57,16 @@ export function LoginPage({ onLogin }: Props) {
             <input
               className="login-input"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
               placeholder="••••••••"
               required
             />
           </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary" 
-          >
-            {loading ? "Signing in…" : "Sign in"}
+          <button className="btn btn-primary" disabled={submitting} type="submit">
+            {submitting ? "Signing in…" : "Sign in"}
           </button>
         </form>
       </div>

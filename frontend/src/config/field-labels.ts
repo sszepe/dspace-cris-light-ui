@@ -1,0 +1,401 @@
+/**
+ * field-labels.ts
+ *
+ * Human-readable display labels for DSpace / CRIS metadata fields.
+ * Used in item-detail and workspace-item-detail views wherever raw field
+ * names would otherwise be shown to users.
+ *
+ * Keys are lower-cased field names exactly as they appear in the DSpace
+ * REST API metadata objects (e.g. "dc.title", "crispj.investigator").
+ *
+ * To add a label: add an entry below in the relevant section.
+ * The fallback when no label is found is the raw field name.
+ */
+
+export const FIELD_LABELS: Record<string, string> = {
+
+  // ── Dublin Core ─────────────────────────────────────────────────────────────
+  "dc.title":                          "Title",
+  "dc.title.alternative":              "Alternative Title",
+  "dc.contributor":                    "Contributor",
+  "dc.contributor.author":             "Author",
+  "dc.contributor.editor":             "Editor",
+  "dc.contributor.advisor":            "Advisor",
+  "dc.contributor.presenter":          "Presenter",
+  "dc.contributor.illustrator":        "Illustrator",
+  "dc.contributor.curator":            "Curator",
+  "dc.creator":                        "Creator",
+  "dc.date":                           "Date",
+  "dc.date.issued":                    "Date Issued",
+  "dc.date.accessioned":               "Date Accessioned",
+  "dc.date.available":                 "Date Available",
+  "dc.date.created":                   "Date Created",
+  "dc.date.submitted":                 "Date Submitted",
+  "dc.description":                    "Description",
+  "dc.description.abstract":           "Abstract",
+  "dc.description.provenance":         "Provenance",
+  "dc.description.sponsorship":        "Sponsorship",
+  "dc.format":                         "Format",
+  "dc.format.extent":                  "Extent",
+  "dc.format.mimetype":                "MIME Type",
+  "dc.identifier":                     "Identifier",
+  "dc.identifier.doi":                 "DOI",
+  "dc.identifier.isbn":                "ISBN",
+  "dc.identifier.issn":                "ISSN",
+  "dc.identifier.uri":                 "URI",
+  "dc.identifier.other":               "Other Identifier",
+  "dc.language":                       "Language",
+  "dc.language.iso":                   "Language (ISO)",
+  "dc.publisher":                      "Publisher",
+  "dc.relation":                       "Relation",
+  "dc.relation.ispartof":              "Is Part Of",
+  "dc.relation.ispartofseries":        "Is Part of Series",
+  "dc.relation.haspart":               "Has Part",
+  "dc.relation.isversionof":           "Is Version Of",
+  "dc.relation.isreferencedby":        "Is Referenced By",
+  "dc.relation.requires":              "Requires",
+  "dc.relation.replaces":              "Replaces",
+  "dc.relation.isreplacedby":          "Is Replaced By",
+  "dc.relation.references":            "References",
+  "dc.relation.project":               "Project",
+  "dc.relation.publication":           "Publication",
+  "dc.relation.product":               "Product / Dataset",
+  "dc.relation.funding":               "Funding",
+  "dc.relation.equipment":             "Equipment",
+  "dc.relation.event":                 "Event",
+  "dc.relation.conference":            "Conference",
+  "dc.relation.work":                  "Work",
+  "dc.relation.orgunit":               "Organisational Unit",
+  "dc.relation.place":                 "Place",
+  "dc.relation.journal":               "Journal",
+  "dc.relation.call":                  "Call",
+  "dc.relation.programme":             "Programme",
+  "dc.relation.archivalresource":      "Archival Resource",
+  "dc.rights":                         "Rights",
+  "dc.rights.uri":                     "Rights URI",
+  "dc.rights.license":                 "Licence",
+  "dc.source":                         "Source",
+  "dc.subject":                        "Subject",
+  "dc.type":                           "Type",
+  "dc.coverage":                       "Coverage",
+  "dc.coverage.spatial":               "Spatial Coverage",
+  "dc.coverage.temporal":              "Temporal Coverage",
+
+  // ── DCTerms ─────────────────────────────────────────────────────────────────
+  "dcterms.ispartof":                  "Is Part Of",
+  "dcterms.isreferencedby":            "Is Referenced By",
+  "dcterms.isreplacedby":              "Is Replaced By",
+  "dcterms.isrequiredby":              "Is Required By",
+  "dcterms.isversionof":               "Is Version Of",
+  "dcterms.hasversion":                "Has Version",
+  "dcterms.haspart":                   "Has Part",
+
+  // ── DSpace ───────────────────────────────────────────────────────────────────
+  "dspace.entity.type":                "Entity Type",
+  "dspace.object.owner":               "Object Owner",
+  "dspace.workflow.startdate":         "Workflow Start Date",
+
+  // ── OAIRECerif ───────────────────────────────────────────────────────────────
+  "oairecerif.author.affiliation":     "Author Affiliation",
+  "oairecerif.editor.affiliation":     "Editor Affiliation",
+  "oairecerif.funder":                 "Funder",
+  "oairecerif.fundingparent":          "Funding Parent",
+  "oairecerif.event.place":            "Event Place",
+  "oairecerif.event.country":          "Event Country",
+  "oairecerif.person.affiliation":     "Person Affiliation",
+
+  // ── CRIS Project (crispj.*) ──────────────────────────────────────────────────
+  "crispj.coordinator":                "Coordinator",
+  "crispj.organization":               "Organisation",
+  "crispj.partnerou":                  "Partner OrgUnit",
+  "crispj.investigator":               "Investigator",
+  "crispj.coinvestigators":            "Co-Investigator",
+  "crispj.funder":                     "Funder",
+  "crispj.startdate":                  "Start Date",
+  "crispj.enddate":                    "End Date",
+  "crispj.status":                     "Status",
+  "crispj.type":                       "Project Type",
+
+  // ── CRIS Funding (crisfund.*) ────────────────────────────────────────────────
+  "crisfund.investigators":            "Investigator",
+  "crisfund.coinvestigators":          "Co-Investigator",
+  "crisfund.leadorganizations":        "Lead Organisation",
+  "crisfund.leadcoorganizations":      "Lead Co-Organisation",
+  "crisfund.amount":                   "Amount",
+  "crisfund.currency":                 "Currency",
+  "crisfund.startdate":                "Start Date",
+  "crisfund.enddate":                  "End Date",
+
+  // ── CRIS OrgUnit (crisou.*) ──────────────────────────────────────────────────
+  "crisou.director":                   "Director",
+  "crisou.relation.ispartof":          "Is Part Of",
+  "crisou.place.country":              "Country",
+  "crisou.acronym":                    "Acronym",
+  "crisou.type":                       "OrgUnit Type",
+
+  // ── CRIS Person (crisrp.*) ───────────────────────────────────────────────────
+  "crisrp.qualification":              "Qualification",
+  "crisrp.education":                  "Education",
+  "crisrp.country":                    "Country",
+
+  // ── CRIS Event (crisevent.*) ─────────────────────────────────────────────────
+  "crisevent.organizerou":             "Organiser (OrgUnit)",
+  "crisevent.organizerpj":             "Organiser (Project)",
+  "crisevent.sponsorou":               "Sponsor (OrgUnit)",
+  "crisevent.sponsorpj":               "Sponsor (Project)",
+  "crisevent.partnerpj":               "Partner (Project)",
+  "crisevent.partnerou":               "Partner (OrgUnit)",
+  "crisevent.startdate":               "Start Date",
+  "crisevent.enddate":                 "End Date",
+  "crisevent.type":                    "Event Type",
+
+  // ── Organisation ────────────────────────────────────────────────────────────
+  "organization.parentorganization":   "Parent Organisation",
+  "organization.address.addresslocality":   "City",
+  "organization.address.addresscountry":    "Country",
+  "organization.legalname":            "Legal Name",
+  "organization.foundingdate":         "Founding Date",
+  "organization.dissolutiondate":      "Dissolution Date",
+  "organization.identifier.ror":       "ROR",
+
+  // ── Person ───────────────────────────────────────────────────────────────────
+  "person.affiliation.name":           "Affiliation",
+  "person.identifier.orcid":           "ORCID",
+  "person.identifier.rid":             "ResearcherID",
+  "person.identifier.scopus-author-id":"Scopus Author ID",
+  "person.familyname":                 "Family Name",
+  "person.givenname":                  "Given Name",
+  "person.birthdate":                  "Date of Birth",
+  "person.deathdate":                  "Date of Death",
+  "person.email":                      "E-Mail",
+  "person.gender":                     "Gender",
+
+  // ── CRIS policy ─────────────────────────────────────────────────────────────
+  "cris.policy.eperson":               "Policy: EPerson",
+  "cris.policy.group":                 "Policy: Group",
+  "cris.submission.definition":        "Submission Form",
+  "cris.submission.definition-correction": "Correction Form",
+  "cris.workspace.shared":             "Shared Workspace",
+  "cris.virtualsource.authority":      "Virtual Source: Authority",
+  "cris.virtualsource.import":         "Virtual Source: Import",
+
+  // ── mdwrepo (mdw-specific fields) ────────────────────────────────────────────
+  "mdwrepo.name.variant":              "Name Variant",
+  "mdwrepo.name.variantlanguage":      "Name Variant Language",
+  "mdwrepo.name.variantnote":          "Name Variant Note",
+  "mdwrepo.place.country":             "Country",
+  "mdwrepo.place.city":                "City",
+  "mdwrepo.place.parentplace":         "Parent Place",
+  "mdwrepo.place.featureclass":        "Feature Class",
+  "mdwrepo.place.featurecode":         "Feature Code",
+  "mdwrepo.place.latitude":            "Latitude",
+  "mdwrepo.place.longitude":           "Longitude",
+  "mdwrepo.venue.name":                "Venue",
+  "mdwrepo.venue.nameoptional":        "Venue (optional)",
+  "mdwrepo.creator.person":            "Creator (Person)",
+  "mdwrepo.creator.orgunit":           "Creator (OrgUnit)",
+  "mdwrepo.publisher.person":          "Publisher (Person)",
+  "mdwrepo.publisher.orgunit":         "Publisher (OrgUnit)",
+  "mdwrepo.publisher.location":        "Publisher Location",
+  "mdwrepo.contributor.curator":       "Curator",
+  "mdwrepo.isedited":                  "Edited By",
+  "mdwrepo.iseditedby":                "Edited By",
+  "mdwrepo.isoruwasstudentof":         "Student Of",
+  "mdwrepo.isOrWasStudentOf":          "Student Of",
+  "mdwrepo.hasOrHadStudent":           "Had Student",
+  "mdwrepo.isOrWasStudycolleague":     "Study Colleague",
+  "mdwrepo.orgunit.hastoporgunit":     "Top OrgUnit",
+  "mdwrepo.subject.percentage":        "Subject Percentage",
+  "mdwrepo.memorialbook.competenceplace": "Competence Place",
+  "mdwrepo.person.placeofbirth":       "Place of Birth",
+  "mdwrepo.person.placeofdeath":       "Place of Death",
+  "mdwrepo.presentation.hostlocation": "Host Location",
+  "mdwrepo.presentation.hostedby":     "Hosted By",
+  "mdwrepo.event.parentevent":         "Parent Event",
+  "mdwrepo.archivalresource.parent":   "Parent Resource",
+  "mdwrepo.archivalresource.child":    "Child Resource",
+  "mdwrepo.ensemble.name":             "Ensemble",
+  "mdwrepo.ivearchive.genre":          "Genre",
+  "mdwrepo.ivearchive.community":      "Community",
+  "mdwrepo.ivearchive.instrument":     "Instrument",
+  "mdwrepo.ivearchive.ensemble":       "Ensemble",
+  "mdwrepo.ivearchive.texttype":       "Text Type",
+  "mdwrepo.ivearchive.danceterms":     "Dance Terms",
+  "mdwrepo.ivearchive.religion":       "Religion",
+  "mdwrepo.ivearchive.region":         "Region",
+  "mdwrepo.ivearchive.analyticalparams": "Analytical Parameters",
+  "mdwrepo.ivearchive.research":       "Research",
+  "mdwrepo.ivearchive.cultureterms":   "Culture Terms",
+  "mdwrepo.ivearchive.cultureregion":  "Culture Region",
+  "mdwrepo.ivearchive.epoche":         "Epoch",
+  "mdwrepo.ivearchive.job":            "Occupation",
+  "mdwrepo.ivearchive.avmedia":        "AV Media",
+  "mdwrepo.ivearchive.dailylife":      "Daily Life",
+  "mdwrepo.ivearchive.language":       "Language",
+
+  // ── mdwlis (mdw LIS / library fields) ───────────────────────────────────────
+  "mdwlis.subject.oefosdekunstzweig":  "ÖFOS Art Branch",
+  "mdwlis.subject.oefosDeKunstzweig":  "ÖFOS Art Branch",
+  "mdwlis.city":                       "City",
+  "mdwlis.country":                    "Country",
+  "mdwlis.artisticappearance.event":   "Artistic Event",
+  "mdwlis.artisticappearance.organizer":"Artistic Organiser",
+  "mdwlis.function.orgunit":           "Function (OrgUnit)",
+  "mdwlis.function.journal":           "Function (Journal)",
+  "mdwlis.soundrecording.ispartof":    "Is Part Of (Sound Recording)",
+
+  // ── mdwfis (mdw FIS / research management) ───────────────────────────────────
+  "mdwfis.project.coordinatormdw":     "Project Coordinator (mdw)",
+  "mdwfis.project.previouscoordinator":"Previous Coordinator",
+  "mdwfis.project.resubmission":       "Resubmission (Project)",
+  "mdwfis.funding.coordinatormdw":     "Funding Coordinator (mdw)",
+  "mdwfis.funding.resubmission":       "Resubmission (Funding)",
+  "mdwfis.funding.submittingorgunit":  "Submitting OrgUnit",
+  "mdwfis.recipients.orgunit":         "Recipient OrgUnit",
+
+  // ── mdwthesis ────────────────────────────────────────────────────────────────
+  "mdwthesis.supervisor.person":       "Supervisor",
+  "mdwthesis.supervisor.org":          "Supervisor (OrgUnit)",
+  "mdwthesis.author.org":              "Author (OrgUnit)",
+
+  // ── RIS Funding (risfunding.*) ───────────────────────────────────────────────
+  "risfunding.recipients.orgunit":             "Recipient OrgUnit",
+  "risfunding.recipients.appliedamountorgunit":"Applied Amount OrgUnit",
+  "risfunding.recipients.amountorgunit":       "Amount OrgUnit",
+
+  // ── Place ────────────────────────────────────────────────────────────────────
+  "place.identifier.geonames":         "GeoNames ID",
+  "place.latitude":                    "Latitude",
+  "place.longitude":                   "Longitude",
+  "place.altitude":                    "Altitude",
+  "place.population":                  "Population",
+  "place.timezone":                    "Timezone",
+  "place.featureclass":                "Feature Class",
+  "place.featurecode":                 "Feature Code",
+  "place.countrycode":                 "Country Code",
+
+  // ── DCAT ─────────────────────────────────────────────────────────────────────
+  "dcat.dataset":                      "Dataset",
+  "dcat.distribution":                 "Distribution",
+  "dcat.service":                      "Data Service",
+  "dcat.catalog":                      "Data Catalog",
+  "dcat.inseries":                     "In Series",
+  "dcat.inSeries":                     "In Series",
+  "dcat.mdw.relateddataset":           "Related Dataset",
+  "dcat.mdw.relatedDataset":           "Related Dataset",
+  "dcat.mdw.servedBydataservice":      "Served By Data Service",
+  "dcat.mdw.servedByDataService":      "Served By Data Service",
+  "dcat.mdw.isindatacatalog":          "In Data Catalog",
+  "dcat.mdw.isInDataCatalog":          "In Data Catalog",
+  "dcat.mdw.containsdataset":          "Contains Dataset",
+  "dcat.mdw.containsDataset":          "Contains Dataset",
+  "dcat.servesdataset":                "Serves Dataset",
+  "dcat.servesDataset":                "Serves Dataset",
+  "dcat.accessurl":                    "Access URL",
+  "dcat.downloadurl":                  "Download URL",
+  "dcat.bytesize":                     "Byte Size",
+  "dcat.mediatype":                    "Media Type",
+  "dcat.format":                       "Format",
+  "dcat.license":                      "Licence",
+  "dcat.keyword":                      "Keyword",
+  "dcat.theme":                        "Theme",
+  "dcat.landingpage":                  "Landing Page",
+  "dcat.contactpoint":                 "Contact Point",
+  "dcat.temporal":                     "Temporal Coverage",
+  "dcat.spatial":                      "Spatial Coverage",
+  "dcat.startdate":                    "Start Date",
+  "dcat.enddate":                      "End Date",
+
+  // ── SKOS ─────────────────────────────────────────────────────────────────────
+  "skos.inscheme":                     "In Scheme",
+  "skos.inScheme":                     "In Scheme",
+  "skos.topconceptof":                 "Top Concept Of",
+  "skos.topConceptOf":                 "Top Concept Of",
+  "skos.hasttopconcept":               "Has Top Concept",
+  "skos.hasTopConcept":                "Has Top Concept",
+  "skos.broader":                      "Broader",
+  "skos.narrower":                     "Narrower",
+  "skos.broadertransitive":            "Broader (Transitive)",
+  "skos.broaderTransitive":            "Broader (Transitive)",
+  "skos.narrowertransitive":           "Narrower (Transitive)",
+  "skos.narrowerTransitive":           "Narrower (Transitive)",
+  "skos.related":                      "Related",
+  "skos.broadmatch":                   "Broad Match",
+  "skos.broadMatch":                   "Broad Match",
+  "skos.closematch":                   "Close Match",
+  "skos.closeMatch":                   "Close Match",
+  "skos.exactmatch":                   "Exact Match",
+  "skos.exactMatch":                   "Exact Match",
+  "skos.narrowmatch":                  "Narrow Match",
+  "skos.narrowMatch":                  "Narrow Match",
+  "skos.relatedmatch":                 "Related Match",
+  "skos.relatedMatch":                 "Related Match",
+  "skos.preflabel":                    "Preferred Label",
+  "skos.prefLabel":                    "Preferred Label",
+  "skos.altlabel":                     "Alternative Label",
+  "skos.altLabel":                     "Alternative Label",
+  "skos.hiddenlabel":                  "Hidden Label",
+  "skos.note":                         "Note",
+  "skos.definition":                   "Definition",
+  "skos.example":                      "Example",
+  "skos.scopenote":                    "Scope Note",
+  "skos.changenote":                   "Change Note",
+  "skos.historynote":                  "History Note",
+  "skos.editorialnote":                "Editorial Note",
+  "skos.notation":                     "Notation",
+
+  // ── RiC-O ────────────────────────────────────────────────────────────────────
+  "rico.isrelatedto":                  "Is Related To",
+  "rico.isRelatedTo":                  "Is Related To",
+  "rico.location":                     "Location",
+  "rico.hasorhadadparticipant":        "Has/Had Participant",
+  "rico.hasOrHadParticipant":          "Has/Had Participant",
+  "rico.isorwasaffectedby":            "Is/Was Affected By",
+  "rico.isOrWasAffectedBy":            "Is/Was Affected By",
+  "rico.affectsoraffected":            "Affects/Affected",
+  "rico.affectsOrAffected":            "Affects/Affected",
+  "rico.agenthasyorhaddlocation":      "Agent Location",
+  "rico.agentHasOrHadLocation":        "Agent Location",
+  "rico.hasorhaddlocation":            "Has/Had Location",
+  "rico.hasOrHadLocation":             "Has/Had Location",
+  "rico.relationhassource":            "Relation Source",
+  "rico.relationHasSource":            "Relation Source",
+  "rico.contained":                    "Contained",
+  "rico.containsorcontained":          "Contains/Contained",
+  "rico.containsOrContained":          "Contains/Contained",
+  "rico.wascontainedby":               "Was Contained By",
+  "rico.wasContainedBy":               "Was Contained By",
+  "rico.hadpart":                      "Had Part",
+  "rico.hadPart":                      "Had Part",
+  "rico.documentedby":                 "Documented By",
+  "rico.documentedBy":                 "Documented By",
+  "rico.documents":                    "Documents",
+
+  // ── EBUCore ──────────────────────────────────────────────────────────────────
+  "ebucoreplus.hascreator":            "Creator",
+  "ebucoreplus.hasCreator":            "Creator",
+  "ebucoreplus.hasproductiondevice":   "Production Device",
+  "ebucoreplus.hasProductionDevice":   "Production Device",
+
+  // ── LOCN ─────────────────────────────────────────────────────────────────────
+  "locn.location":                     "Location",
+
+  // ── LOM / UIBK ───────────────────────────────────────────────────────────────
+  "lomuibk.relation.resource":         "Related Resource",
+  "lomuibk.learningresourcetype.entry":"Learning Resource Type",
+
+};
+
+/**
+ * Returns the human-readable label for a metadata field.
+ * Falls back to the raw field name if no label is defined.
+ *
+ * Lookup is case-insensitive so "DC.Title" and "dc.title" both match.
+ */
+export function getFieldLabel(field: string): string {
+  return (
+    FIELD_LABELS[field] ??
+    FIELD_LABELS[field.toLowerCase()] ??
+    field
+  );
+}

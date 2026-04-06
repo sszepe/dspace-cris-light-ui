@@ -1,116 +1,294 @@
-/**
- * auth/AuthContext.tsx
- *
- * Provides authentication state to the whole app.
- * On mount, calls /api/authn/status to verify the stored JWT is still valid.
- * Logout calls POST /api/authn/logout before clearing local state.
- */
-
 import React from "react";
+import { apiFetch, ensureCsrfToken, clearStoredAuth, setStoredJwt, setStoredCsrfToken } from "./client";
 import {
-  apiLogin,
-  apiLogout,
-  apiAuthStatus,
-  getToken,
-  clearToken,
-  type LoginCredentials,
-  type EPerson,
-} from "./client";
+  fetchAuthStatus,
+  fetchEPersonByHref,
+  fetchEPersonGroups,
+  fetchAuthorizedEntityTypes,
+  fetchAuthorizedCollectionEntityTypes,
+} from "../api/person-api";
 
-// ── Context shape ─────────────────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 
-interface AuthContextValue {
+export type EPerson = {
+  id: string;
+  uuid: string;
+  name: string | null;
+  email: string | null;
+  netid: string | null;
+  lastActive: string | null;
+  canLogIn: boolean;
+  requireCertificate: boolean;
+  selfRegistered: boolean;
+  metadata: Record<string, Array<{ value: string; language?: string | null; authority?: string | null; confidence?: number; place?: number }>>;
+  _links?: {
+    self?: { href: string };
+    groups?: { href: string };
+  };
+};
+
+export type Group = {
+  id: string;
+  uuid: string;
+  name: string;
+  permanent: boolean;
+  metadata?: Record<string, Array<{ value: string }>>;
+  _embedded?: {
+    object?: any;
+  };
+};
+
+export type EntityType = {
+  id: number;
+  label: string;
+};
+
+type AuthState = {
+  isAuthenticated: boolean;
+  username: string | null;
+  epersonId: string | null;
+  eperson: EPerson | null;
+  groups: Group[];
+  /** Entity types authorized via external source (for dashboard cluster display). */
+  entityTypes: EntityType[];
+  /**
+   * Entity types the user can submit to via at least one collection.
+   * Used to gate creation / import buttons in the UI.
+   * Populated from /api/core/entitytypes/search/findAllByAuthorizedCollection.
+   */
+  collectionEntityTypes: EntityType[];
+};
+
+type AuthContextValue = {
   isAuthenticated: boolean;
   isLoading: boolean;
+  username: string | null;
+  epersonId: string | null;
   eperson: EPerson | null;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  groups: Group[];
+  entityTypes: EntityType[];
+  collectionEntityTypes: EntityType[];
+  /** True when the user is a member of the DSpace Administrators group. */
+  isAdmin: boolean;
+  /**
+   * True when the user is a community admin for at least one community.
+   * Derived from membership in any group named COMMUNITY_<uuid>_ADMIN.
+   */
+  isCommunityAdmin: boolean;
+  /**
+   * Set of community UUIDs for which the user is a community admin.
+   * Derived from group names matching COMMUNITY_<uuid>_ADMIN.
+   */
+  communityAdminIds: ReadonlySet<string>;
+  /**
+   * Returns true if the user is a community admin for the given community UUID.
+   * Shorthand for communityAdminIds.has(communityId).
+   */
+  isCommunityAdminOf: (communityId: string) => boolean;
+  /**
+   * Returns true if the user can create items of the given entity type.
+   * Checks collectionEntityTypes (submit permission on a collection).
+   */
+  canCreate: (entityType: string) => boolean;
+  refreshUser: () => Promise<void>;
+  login: (u: string, p: string) => Promise<void>;
   logout: () => Promise<void>;
-  /** Re-fetch /api/authn/status (e.g. after profile edit) */
-  refreshStatus: () => Promise<void>;
+};
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+// const CSRF_TOKEN_KEY = "csrf";
+const JWT_KEY = "jwt";
+const ADMIN_GROUP_NAME = "Administrator";
+// DSpace names community admin groups "COMMUNITY_<uuid>_ADMIN"
+const COMMUNITY_ADMIN_RE = /^COMMUNITY_([0-9a-f-]+)_ADMIN$/i;
+
+const EMPTY_STATE: AuthState = {
+  isAuthenticated: false,
+  username: null,
+  epersonId: null,
+  eperson: null,
+  groups: [],
+  entityTypes: [],
+  collectionEntityTypes: [],
+};
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function metaFirst(meta: EPerson["metadata"] | undefined, field: string): string | null {
+  return meta?.[field]?.[0]?.value ?? null;
 }
 
-const AuthContext = React.createContext<AuthContextValue | null>(null);
+async function loadCurrentUser(): Promise<AuthState> {
+  const status = await fetchAuthStatus();
 
-// ── Provider ──────────────────────────────────────────────────────────────────
+  if (!status?.authenticated) {
+    return EMPTY_STATE;
+  }
+
+  const epersonHref = status?._links?.eperson?.href;
+  let eperson: EPerson | null = null;
+  let groups: Group[] = [];
+  let entityTypes: EntityType[] = [];
+  let collectionEntityTypes: EntityType[] = [];
+
+  if (epersonHref) {
+    eperson = await fetchEPersonByHref(epersonHref).catch(() => null);
+  }
+
+  if (eperson?.id) {
+    [groups, entityTypes, collectionEntityTypes] = await Promise.all([
+      fetchEPersonGroups(eperson.id).catch(() => []),
+      fetchAuthorizedEntityTypes().catch(() => []),
+      fetchAuthorizedCollectionEntityTypes().catch(() => []),
+    ]);
+  }
+
+  const firstName = metaFirst(eperson?.metadata, "eperson.firstname");
+  const lastName = metaFirst(eperson?.metadata, "eperson.lastname");
+  const username =
+    firstName && lastName
+      ? `${firstName} ${lastName}`
+      : eperson?.email ?? eperson?.name ?? "user";
+
+  return {
+    isAuthenticated: true,
+    username,
+    epersonId: eperson?.id ?? null,
+    eperson,
+    groups,
+    entityTypes,
+    collectionEntityTypes,
+  };
+}
+
+// ── Context ───────────────────────────────────────────────────────────────────
+
+const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [eperson, setEperson] = React.useState<EPerson | null>(null);
+  const [state, setState] = React.useState<AuthState>(EMPTY_STATE);
+  const [loading, setLoading] = React.useState(true);
 
-  const checkStatus = React.useCallback(async () => {
-    const token = getToken();
-    if (!token) {
-      setIsAuthenticated(false);
-      setEperson(null);
-      setIsLoading(false);
+  const refreshUser = React.useCallback(async () => {
+    const next = await loadCurrentUser();
+    setState(next);
+  }, []);
+
+  React.useEffect(() => {
+    const existingJwt = sessionStorage.getItem(JWT_KEY);
+    if (!existingJwt) {
+      setLoading(false);
       return;
     }
 
+    refreshUser()
+      .catch(() => {
+        clearStoredAuth();
+        setState(EMPTY_STATE);
+      })
+      .finally(() => setLoading(false));
+  }, [refreshUser]);
+
+  const login = React.useCallback(async (username: string, password: string) => {
+    const csrf = await ensureCsrfToken(true);
+
+    const body = new URLSearchParams();
+    body.set("user", username);
+    body.set("password", password);
+
+    const API = import.meta.env.VITE_API_BASE_URL || "/server";
+    const res = await fetch(`${API}/api/authn/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-XSRF-TOKEN": csrf,
+      },
+      body: body.toString(),
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Login failed (${res.status})`);
+    }
+
+    const rotatedCsrf = res.headers.get("DSPACE-XSRF-TOKEN");
+    if (rotatedCsrf) setStoredCsrfToken(rotatedCsrf);
+
+    const auth = res.headers.get("Authorization");
+    if (auth) setStoredJwt(auth.replace(/^Bearer\s+/i, "").trim());
+
+    const next = await loadCurrentUser();
+    setState(next);
+  }, []);
+
+  const logout = React.useCallback(async () => {
     try {
-      const status = await apiAuthStatus();
-      if (status.authenticated) {
-        setIsAuthenticated(true);
-        setEperson(status._embedded?.eperson ?? null);
-      } else {
-        clearToken();
-        setIsAuthenticated(false);
-        setEperson(null);
-      }
-    } catch {
-      // Token invalid or network error — treat as unauthenticated
-      clearToken();
-      setIsAuthenticated(false);
-      setEperson(null);
+      await apiFetch("/api/authn/logout", { method: "POST" });
     } finally {
-      setIsLoading(false);
+      clearStoredAuth();
+      setState(EMPTY_STATE);
     }
   }, []);
 
-  // Verify token on mount
-  React.useEffect(() => {
-    checkStatus();
-  }, [checkStatus]);
+  const isAdmin = state.groups.some((g) => g.name === ADMIN_GROUP_NAME);
 
-  const login = React.useCallback(
-    async (credentials: LoginCredentials) => {
-      await apiLogin(credentials);
-      // Re-check status to populate eperson
-      setIsLoading(true);
-      await checkStatus();
+  const communityAdminIds = React.useMemo<ReadonlySet<string>>(() => {
+    const ids = new Set<string>();
+    for (const g of state.groups) {
+      const m = COMMUNITY_ADMIN_RE.exec(g.name);
+      if (m) ids.add(m[1].toLowerCase());
+    }
+    return ids;
+  }, [state.groups]);
+
+  const isCommunityAdmin = communityAdminIds.size > 0;
+
+  const isCommunityAdminOf = React.useCallback(
+    (communityId: string) => communityAdminIds.has(communityId.toLowerCase()),
+    [communityAdminIds],
+  );
+
+  const canCreate = React.useCallback(
+    (entityType: string) => {
+      const normalised = entityType.toLowerCase();
+      return state.collectionEntityTypes.some(
+        (et) => et.label.toLowerCase() === normalised,
+      );
     },
-    [checkStatus],
+    [state.collectionEntityTypes],
   );
 
-  const logout = React.useCallback(async () => {
-    await apiLogout(); // POST /api/authn/logout — invalidates server-side
-    setIsAuthenticated(false);
-    setEperson(null);
-  }, []);
-
-  const refreshStatus = React.useCallback(async () => {
-    await checkStatus();
-  }, [checkStatus]);
-
-  const value = React.useMemo<AuthContextValue>(
-    () => ({
-      isAuthenticated,
-      isLoading,
-      eperson,
-      login,
-      logout,
-      refreshStatus,
-    }),
-    [isAuthenticated, isLoading, eperson, login, logout, refreshStatus],
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: state.isAuthenticated,
+        isLoading: loading,
+        username: state.username,
+        epersonId: state.epersonId,
+        eperson: state.eperson,
+        groups: state.groups,
+        entityTypes: state.entityTypes,
+        collectionEntityTypes: state.collectionEntityTypes,
+        isAdmin,
+        isCommunityAdmin,
+        communityAdminIds,
+        isCommunityAdminOf,
+        canCreate,
+        refreshUser,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// ── Hook ──────────────────────────────────────────────────────────────────────
-
-export function useAuth(): AuthContextValue {
+export function useAuth() {
   const ctx = React.useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }

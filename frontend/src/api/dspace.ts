@@ -23,9 +23,20 @@ export function metaFirst(
   return meta?.[field]?.[0]?.value ?? null;
 }
 
-/** Return all values for a metadata field as an array. */
+/** Return all string values for a metadata field. */
 export function metaAll(meta: Metadata | undefined, field: string): string[] {
   return (meta?.[field] ?? []).map((v) => v.value);
+}
+
+/**
+ * Return all full MetaValue objects for a metadata field.
+ * Use this when you need authority, confidence, or language alongside the value.
+ */
+export function metaAllFull(
+  meta: Metadata | undefined,
+  field: string,
+): MetaValue[] {
+  return meta?.[field] ?? [];
 }
 
 /** Strip HTML tags from a string. */
@@ -299,6 +310,7 @@ export interface WorkspaceItemDetail {
   id: number;
   type: "workspaceitem";
   lastModified: string;
+  errors?: Array<{ message: string; paths: string[] }>;
   sections?: Record<string, any>;
   _links: HalLinks;
   _embedded: {
