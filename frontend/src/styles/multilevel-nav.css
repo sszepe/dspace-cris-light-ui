@@ -7,8 +7,10 @@
   flex-direction: column;
   margin-bottom: 18px;
   border-radius: 12px;
-  overflow: hidden;
+  /* overflow: hidden removed — it clips the absolutely-positioned user dropdown.
+     Border-radius is applied per-row instead. */
   border: 1px solid rgba(0, 59, 121, 0.15);
+  position: relative; /* establishes stacking context so z-index works */
 }
 
 /* ── Top row ── */
@@ -19,6 +21,12 @@
   background: var(--accent-soft, #d0e4f7);
   padding: 10px 14px;
   gap: 8px;
+  border-radius: 12px 12px 0 0; /* replaces the nav overflow:hidden rounding */
+}
+
+/* When there is no sub-nav, round all four corners */
+.multilevel-nav:not(:has(.nav-sub)) .nav-top {
+  border-radius: 12px;
 }
 
 .nav-top-items {
@@ -87,6 +95,7 @@
   border-top: 1px solid rgba(0, 59, 121, 0.08);
   padding: 7px 14px;
   flex-wrap: wrap;
+  border-radius: 0 0 12px 12px; /* replaces the nav overflow:hidden rounding */
 }
 
 .nav-sub-tab {

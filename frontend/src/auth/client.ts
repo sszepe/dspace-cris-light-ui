@@ -1,171 +1,115 @@
-/**
- * auth/client.ts
- *
- * Thin wrapper around fetch that:
- *  - Sends the JWT in Authorization: Bearer <token>
- *  - Reads the DSPACE-XSRF-TOKEN cookie and echoes it as X-XSRF-TOKEN
- *  - Persists the token returned by login / refreshed by the server
- *  - Exposes apiFetch for all API calls
- */
+const API = import.meta.env.VITE_API_BASE_URL || "/server";
 
-const BASE_URL = import.meta.env.VITE_DSPACE_URL ?? "";
-const TOKEN_KEY = "dspace_jwt";
-
-// ── Token store ───────────────────────────────────────────────────────────────
-
-export function getToken(): string | null {
-  return sessionStorage.getItem(TOKEN_KEY);
+function readHeader(headers: Headers, name: string): string | null {
+  const value = headers.get(name);
+  return value && value.trim() ? value.trim() : null;
 }
 
-export function setToken(token: string): void {
-  sessionStorage.setItem(TOKEN_KEY, token);
+export function getStoredCsrfToken(): string | null {
+  return sessionStorage.getItem("csrf");
 }
 
-export function clearToken(): void {
-  sessionStorage.removeItem(TOKEN_KEY);
+export function setStoredCsrfToken(token: string | null) {
+  if (token) {
+    sessionStorage.setItem("csrf", token);
+  } else {
+    sessionStorage.removeItem("csrf");
+  }
 }
 
-// ── CSRF cookie helper ────────────────────────────────────────────────────────
-
-function getCsrfToken(): string | null {
-  const match = document.cookie
-    .split("; ")
-    .find((c) => c.startsWith("DSPACE-XSRF-TOKEN="));
-  return match ? decodeURIComponent(match.split("=")[1]) : null;
+export function getStoredJwt(): string | null {
+  return sessionStorage.getItem("jwt");
 }
 
-// ── Core fetch wrapper ────────────────────────────────────────────────────────
+export function setStoredJwt(token: string | null) {
+  if (token) {
+    sessionStorage.setItem("jwt", token);
+  } else {
+    sessionStorage.removeItem("jwt");
+  }
+}
 
-export async function apiFetch<T = unknown>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
-  const token = getToken();
-  const csrf = getCsrfToken();
+export function clearStoredAuth() {
+  sessionStorage.removeItem("csrf");
+  sessionStorage.removeItem("jwt");
+}
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-  if (csrf) headers["X-XSRF-TOKEN"] = csrf;
-
-  const res = await fetch(`${BASE_URL}/server${path}`, {
-    ...options,
-    credentials: "include", // send/receive cookies (needed for CSRF seed)
-    headers,
-  });
-
-  // Server may return a refreshed token in the Authorization header
-  const newToken = res.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
-  if (newToken) setToken(newToken);
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => res.statusText);
-    throw new Error(`${res.status} ${res.statusText}: ${text}`);
+function updateTokensFromResponse(res: Response) {
+  const csrf = readHeader(res.headers, "DSPACE-XSRF-TOKEN");
+  if (csrf) {
+    setStoredCsrfToken(csrf);
   }
 
-  // 204 No Content (e.g. logout)
-  if (res.status === 204) return undefined as unknown as T;
-
-  return res.json() as Promise<T>;
+  const auth = readHeader(res.headers, "Authorization");
+  if (auth) {
+    setStoredJwt(auth.replace(/^Bearer\s+/i, ""));
+  }
 }
 
-// ── Auth API calls ────────────────────────────────────────────────────────────
+export async function ensureCsrfToken(force = false): Promise<string> {
+  const existing = getStoredCsrfToken();
+  if (existing && !force) {
+    return existing;
+  }
 
-export interface LoginCredentials {
-  user: string;
-  password: string;
-}
-
-export interface AuthStatus {
-  okay: boolean;
-  authenticated: boolean;
-  type: string;
-  _links?: { eperson?: { href: string } };
-  _embedded?: {
-    eperson?: EPerson;
-    specialGroups?: any;
-  };
-}
-
-export interface EPerson {
-  uuid: string;
-  email: string;
-  name: string | null;
-  netid: string | null;
-  lastActive: string | null;
-  canLogIn: boolean;
-  requireCertificate: boolean;
-  selfRegistered: boolean;
-  metadata: Record<string, Array<{ value: string; language: string | null }>>;
-  _links: Record<string, { href: string }>;
-}
-
-/**
- * POST /api/authn/login
- * DSpace returns the JWT in the Authorization response header.
- */
-export async function apiLogin(credentials: LoginCredentials): Promise<string> {
-  const csrf = getCsrfToken();
-  const body = new URLSearchParams({
-    user: credentials.user,
-    password: credentials.password,
-  });
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/x-www-form-urlencoded",
-  };
-  if (csrf) headers["X-XSRF-TOKEN"] = csrf;
-
-  const res = await fetch(`${BASE_URL}/server/api/authn/login`, {
-    method: "POST",
+  const res = await fetch(`${API}/api/security/csrf`, {
+    method: "GET",
     credentials: "include",
-    headers,
-    body,
+    headers: {
+      Accept: "application/json",
+    },
   });
 
+  updateTokensFromResponse(res);
+
   if (!res.ok) {
-    const text = await res.text().catch(() => res.statusText);
-    throw new Error(text || `Login failed (${res.status})`);
+    throw new Error(`CSRF request failed: ${res.status}`);
   }
 
-  const token = res.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
-  if (!token) throw new Error("No token in login response");
-  setToken(token);
-  return token;
-}
-
-/**
- * POST /api/authn/logout
- * Sends the current JWT in Authorization + CSRF token.
- * Server invalidates the token server-side (all devices/browsers).
- */
-export async function apiLogout(): Promise<void> {
-  const token = getToken();
-  const csrf = getCsrfToken();
-
-  const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-  if (csrf) headers["X-XSRF-TOKEN"] = csrf;
-
-  try {
-    await fetch(`${BASE_URL}/server/api/authn/logout`, {
-      method: "POST",
-      credentials: "include",
-      headers,
-    });
-  } finally {
-    // Always clear local token, even if the request fails
-    clearToken();
+  const csrf = getStoredCsrfToken();
+  if (!csrf) {
+    throw new Error("No DSPACE-XSRF-TOKEN returned by backend");
   }
+
+  return csrf;
 }
 
-/**
- * GET /api/authn/status
- * Returns current authentication state + embedded eperson.
- */
-export async function apiAuthStatus(): Promise<AuthStatus> {
-  return apiFetch<AuthStatus>("/api/authn/status");
+export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const method = (init.method || "GET").toUpperCase();
+  const headers = new Headers(init.headers || {});
+
+  const jwt = getStoredJwt();
+  if (jwt && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${jwt}`);
+  }
+
+  if (method !== "GET" && method !== "HEAD") {
+    const csrf = await ensureCsrfToken();
+    headers.set("X-XSRF-TOKEN", csrf);
+  }
+
+  const res = await fetch(`${API}${path}`, {
+    ...init,
+    method,
+    headers,
+    credentials: "include",
+  });
+
+  updateTokensFromResponse(res);
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`API error ${res.status}${text ? `: ${text}` : ""}`);
+  }
+
+  if (res.status === 204) {
+    return undefined as T;
+  }
+
+  const contentType = res.headers.get("content-type") || "";
+  if (contentType.includes("json")) {
+    return res.json();
+  }
+
+  return (await res.text()) as T;
 }

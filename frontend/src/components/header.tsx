@@ -1,8 +1,14 @@
-export function Header() {
+type HeaderProps = {
+  /** Application name from the active profile (e.g. "mdw FIS", "DSpace CRIS"). */
+  appName?: string;
+};
+
+export function Header({ appName }: HeaderProps) {
+  const title = appName ?? "DSpace Console";
   return (
     <header className="app-header">
       <div className="header-title">
-        <h1>DSpace Console</h1>
+        <h1>{title}</h1>
         <div className="header-sub">
           DSpace CRIS Light UI.{" "}
           <a

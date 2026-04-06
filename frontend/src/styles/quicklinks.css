@@ -1,0 +1,777 @@
+/* ── Quicklinks page ────────────────────────────────────────────────────────── */
+
+.ql-page {
+  padding: 20px 24px;
+  max-width: 1280px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+
+.ql-header {
+  margin-bottom: 18px;
+}
+
+.ql-header-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ql-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.ql-config-source {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.ql-description {
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ── Preset tabs row ─────────────────────────────────────────────────────────── */
+
+.ql-tabs-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ql-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ql-tab {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.ql-tab:hover {
+  border-color: #93c5fd;
+  background: #f0f9ff;
+}
+
+.ql-tab--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.ql-create-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Main grid ───────────────────────────────────────────────────────────────── */
+
+.ql-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────────── */
+
+.ql-sidebar {
+  display: grid;
+  gap: 12px;
+  /* Prevent sidebar from exceeding viewport height and allow scroll */
+  min-width: 0;
+}
+
+.ql-preset-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+}
+
+.ql-preset-label {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.ql-preset-description {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.ql-base-filters-heading {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.ql-base-filters-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.ql-base-filter-chip {
+  font-size: 11px;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #4b5563;
+}
+
+/* ── Facet box ───────────────────────────────────────────────────────────────── */
+
+.ql-facet-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+
+.ql-facet-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.ql-facet-status {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.ql-facet-error {
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.ql-facet-list {
+  display: grid;
+  gap: 5px;
+}
+
+.ql-facet-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.ql-facet-label input[type="checkbox"] {
+  flex-shrink: 0;
+}
+
+.ql-facet-label-text {
+  flex: 1;
+}
+
+.ql-facet-count {
+  color: #9ca3af;
+  background: #f3f4f6;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.ql-facet-more {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ── Right column ────────────────────────────────────────────────────────────── */
+
+.ql-right {
+  display: grid;
+  gap: 14px;
+  /* Critical: prevents right column from overflowing the grid */
+  min-width: 0;
+}
+
+/* ── Search bar ──────────────────────────────────────────────────────────────── */
+
+.ql-search-bar {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+}
+
+.ql-search-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ql-search-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.ql-search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ql-btn-search {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ql-btn-search:hover {
+  background: #1d4ed8;
+}
+
+.ql-btn-reset {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #374151;
+}
+
+.ql-btn-reset:hover {
+  background: #f9fafb;
+}
+
+/* ── Active filter chips ──────────────────────────────────────────────────────── */
+
+.ql-active-filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.ql-active-filters-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.ql-active-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #c7d2fe;
+  background: #eef2ff;
+  color: #3730a3;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.ql-active-chip:hover {
+  background: #e0e7ff;
+}
+
+.ql-clear-all {
+  border: none;
+  background: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+}
+
+.ql-clear-all:hover {
+  text-decoration: underline;
+}
+
+/* ── Results panel ───────────────────────────────────────────────────────────── */
+
+.ql-results-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  /* Prevent overflow beyond the grid column */
+  overflow: hidden;
+  min-width: 0;
+}
+
+.ql-results-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.ql-results-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ql-results-count {
+  font-size: 12px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.ql-results-page {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.ql-results-status {
+  padding: 20px 14px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.ql-results-error {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+/* ── Result card ─────────────────────────────────────────────────────────────── */
+
+.ql-result-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f3f5;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.ql-result-card:hover {
+  background: #f8fafc;
+}
+
+.ql-result-card:last-child {
+  border-bottom: none;
+}
+
+.ql-result-thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.ql-result-thumb-placeholder {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+.ql-result-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.ql-result-name {
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ql-result-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.ql-result-entity-badge {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ── Pagination ──────────────────────────────────────────────────────────────── */
+
+.ql-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.ql-page-btn {
+  padding: 5px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ql-page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ql-page-btn:not(:disabled):hover {
+  background: #f9fafb;
+}
+
+/* ── Footer note ─────────────────────────────────────────────────────────────── */
+
+.ql-footer-note {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ── State messages ──────────────────────────────────────────────────────────── */
+
+.ql-loading-page {
+  padding: 40px 24px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.ql-error-page {
+  padding: 20px 24px;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .ql-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-sidebar {
+    /* On small screens show sidebar collapsed or inline */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* ── Create buttons ──────────────────────────────────────────────────────────── */
+
+.ql-create-btn {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: filter 0.1s;
+}
+
+.ql-create-btn:hover {
+  filter: brightness(1.1);
+}
+
+.ql-create-btn--blue   { background: #2563eb; border-color: #2563eb; }
+.ql-create-btn--violet { background: #7c3aed; border-color: #7c3aed; }
+.ql-create-btn--cyan   { background: #0891b2; border-color: #0891b2; }
+
+.ql-create-btn--teal   { background: #0d9488; border-color: #0d9488; }
+
+.ql-create-btn--amber  { background: #d97706; border-color: #d97706; }
+
+/* ── View mode tabs (List / Tree) ────────────────────────────────────────────── */
+
+.ql-view-tabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  align-self: start;
+}
+
+.ql-view-tab {
+  padding: 6px 14px;
+  border: none;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  border-right: 1px solid #e5e7eb;
+}
+
+.ql-view-tab:last-child {
+  border-right: none;
+}
+
+.ql-view-tab:hover {
+  background: #f9fafb;
+}
+
+.ql-view-tab--active {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* ── Tree panel ──────────────────────────────────────────────────────────────── */
+
+.ql-tree-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.ql-tree-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ql-tree-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  background: #f9fafb;
+}
+
+.ql-tree-filter-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+.ql-tree-filter-chip {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+
+.ql-tree-filter-chip--level {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #ddd6fe;
+}
+
+.ql-tree-filter-chip--type {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+/* ── Tree rows ───────────────────────────────────────────────────────────────── */
+
+.ql-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px 7px 8px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background 0.1s;
+  min-width: 0;
+}
+
+.ql-tree-row:last-child {
+  border-bottom: none;
+}
+
+.ql-tree-row:hover {
+  background: #f8fafc;
+}
+
+.ql-tree-row--scheme {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ql-tree-row--scheme:hover {
+  background: #f0fdf4;
+}
+
+.ql-tree-row--concept:hover {
+  background: #f0f9ff;
+}
+
+.ql-tree-toggle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 13px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background 0.1s, color 0.1s;
+}
+
+.ql-tree-toggle:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.ql-tree-dot {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+  color: #d1d5db;
+  font-size: 16px;
+}
+
+.ql-tree-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ql-tree-badge--type {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.ql-tree-name {
+  font-size: 13px;
+  color: #1a1a2e;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.ql-tree-name--scheme {
+  font-weight: 700;
+  color: #15803d;
+  cursor: pointer;
+}
+
+.ql-tree-name--scheme:hover {
+  text-decoration: underline;
+}
+
+.ql-tree-link {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: color 0.1s, background 0.1s;
+}
+
+.ql-tree-link:hover {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* ── Tree status / empty / error ─────────────────────────────────────────────── */
+
+.ql-tree-status {
+  padding: 20px 14px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.ql-tree-empty {
+  padding: 6px 0;
+  font-size: 12px;
+  color: #d1d5db;
+  font-style: italic;
+}
+
+.ql-tree-error {
+  padding: 4px 0;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.ql-tree-error-banner {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+}
+
+/* ── Results header with view toggle ─────────────────────────────────────────── */
+
+.ql-results-header-with-toggle {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ql-create-btn--indigo { background: #4f46e5; border-color: #4f46e5; }

@@ -1,43 +1,54 @@
 import React from "react";
 import { routes } from "../navigation/hash";
-import type { EPerson } from "../auth/client";
+import { useAuth } from "../auth/AuthContext";
+import type { NavTab } from "../profiles/profile-config";
 
-type TopTab = {
-  label: string;
-  route: string;
-  key: string;
-};
-
-type SubNavItem = {
-  label: string;
-  route: string;
-  key: string;
-  active?: boolean;
-};
-
+type SubNavItem = { label: string; route: string; key: string; active?: boolean };
 type Props = {
   activeRoute?: string;
   subNav?: SubNavItem[];
   onLogout?: () => void;
-  eperson?: EPerson | null;
+  /**
+   * Whether to show the Quicklinks tab. Only used as a fallback when navTabs
+   * is not provided (i.e. no profile is active yet).
+   */
+  showQuicklinks?: boolean;
+  /**
+   * Tab list from the active profile. When provided, these are rendered
+   * directly — showQuicklinks and BASE_TABS are ignored.
+   */
+  navTabs?: NavTab[];
 };
 
-const TOP_TABS: TopTab[] = [
-  { label: "Dashboard", route: routes.dashboard, key: "dashboard" },
+// Fallback tabs — used only when no profile navTabs are provided
+const BASE_TABS: NavTab[] = [
+  { label: "Dashboard",   route: routes.dashboard,   key: "dashboard" },
   { label: "Communities", route: routes.communities, key: "communities" },
-  { label: "Workspace", route: routes.workspace, key: "workspace" },
-  { label: "Search", route: routes.search, key: "search" },
+  { label: "Workspace",   route: routes.workspace,   key: "workspace" },
+  { label: "Search",      route: routes.search,      key: "search" },
 ];
 
+const QUICKLINKS_TAB: NavTab = {
+  label: "Quicklinks",
+  route: routes.quicklinks,
+  key: "quicklinks",
+};
+
+function initialsFromName(name?: string | null) {
+  const parts = (name || "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "U";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
+}
+
 function UserMenu({
-  eperson,
   onLogout,
   active,
 }: {
-  eperson?: EPerson | null;
   onLogout?: () => void;
   active: boolean;
 }) {
+  const { username, eperson, isAdmin } = useAuth();
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -50,8 +61,24 @@ function UserMenu({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const displayName = eperson?.name ?? eperson?.email ?? "Account";
-  const initial = displayName[0]?.toUpperCase() ?? "?";
+  const displayName = username || eperson?.name || "User";
+  const email = eperson?.email || eperson?.name || "—";
+  const initials = initialsFromName(displayName);
+
+  const linkStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "9px 14px",
+    fontSize: 13,
+    color: "#374151",
+    textDecoration: "none",
+    cursor: "pointer",
+    background: "none",
+    border: "none",
+    width: "100%",
+    textAlign: "left",
+  };
 
   return (
     <div
@@ -71,10 +98,6 @@ function UserMenu({
           borderRadius: 6,
           outline: "none",
         }}
-        onMouseEnter={(e) =>
-          (e.currentTarget.style.background = "rgba(255,255,255,0.12)")
-        }
-        onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
       >
         <div
           style={{
@@ -92,22 +115,22 @@ function UserMenu({
             border: active ? "2px solid #fff" : "2px solid transparent",
           }}
         >
-          {initial}
+          {initials}
         </div>
         <span
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: "#e5e7eb",
-            maxWidth: 140,
+            color: "#1b1b1b",
+            maxWidth: 180,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {eperson?.email ?? "Account"}
+          {email}
         </span>
-        <span style={{ fontSize: 10, color: "#9ca3af" }}>▾</span>
+        <span style={{ fontSize: 10, color: "#4a5568" }}>▾</span>
       </button>
 
       {open && (
@@ -120,48 +143,66 @@ function UserMenu({
             border: "1px solid #e5e7eb",
             borderRadius: 8,
             boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-            minWidth: 200,
-            zIndex: 100,
+            minWidth: 220,
+            zIndex: 1000,
             overflow: "hidden",
           }}
         >
-          <div
-            style={{ padding: "12px 14px", borderBottom: "1px solid #f3f4f6" }}
-          >
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#111827",
-                marginBottom: 1,
-              }}
-            >
+          {/* User info */}
+          <div style={{ padding: "12px 14px", borderBottom: "1px solid #f3f4f6" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", marginBottom: 1 }}>
               {displayName}
             </div>
-            {eperson?.email && eperson.email !== displayName && (
-              <div style={{ fontSize: 12, color: "#6b7280" }}>
-                {eperson.email}
+            <div style={{ fontSize: 12, color: "#6b7280" }}>{email}</div>
+            {isAdmin && (
+              <div
+                style={{
+                  marginTop: 4,
+                  fontSize: 11,
+                  display: "inline-block",
+                  padding: "1px 6px",
+                  borderRadius: 999,
+                  background: "#eef2ff",
+                  color: "#4338ca",
+                  fontWeight: 500,
+                }}
+              >
+                Administrator
               </div>
             )}
           </div>
+
+          {/* Menu items */}
           <a
             href={routes.profile}
             onClick={() => setOpen(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "9px 14px",
-              fontSize: 13,
-              color: "#374151",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "")}
+            style={linkStyle as React.CSSProperties}
           >
             <span>👤</span> My Profile
           </a>
+
+          {isAdmin && (
+            <a
+              href={routes.adminSettings}
+              onClick={() => setOpen(false)}
+              style={linkStyle as React.CSSProperties}
+            >
+              <span>⚙️</span> Admin Settings
+            </a>
+          )}
+
+          {isAdmin && (
+            <a
+              href={routes.formBuilder}
+              onClick={() => setOpen(false)}
+              style={linkStyle as React.CSSProperties}
+            >
+              <span>🗂</span> Form Builder
+            </a>
+          )}
+
           <div style={{ height: 1, background: "#f3f4f6" }} />
+
           {onLogout && (
             <button
               onClick={() => {
@@ -169,22 +210,9 @@ function UserMenu({
                 onLogout();
               }}
               style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "9px 14px",
-                fontSize: 13,
+                ...(linkStyle as React.CSSProperties),
                 color: "#dc2626",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "#fff1f0")
-              }
-              onMouseLeave={(e) => (e.currentTarget.style.background = "")}
             >
               <span>↩</span> Sign out
             </button>
@@ -195,12 +223,26 @@ function UserMenu({
   );
 }
 
-export default function Nav({ activeRoute, subNav, onLogout, eperson }: Props) {
+export default function Nav({ activeRoute, subNav, onLogout, showQuicklinks, navTabs }: Props) {
+  // If the profile provides navTabs, use them directly.
+  // Otherwise fall back to the hardcoded BASE_TABS + quicklinks toggle.
+  const tabs: NavTab[] = navTabs
+    ? navTabs
+    : showQuicklinks
+      ? [BASE_TABS[0], BASE_TABS[1], QUICKLINKS_TAB, BASE_TABS[2], BASE_TABS[3]]
+      : BASE_TABS;
+
+  const isAdminRoute =
+    activeRoute === "profile" ||
+    activeRoute === "adminClusters" ||
+    activeRoute === "adminSettings" ||
+    activeRoute === "formBuilder";
+
   return (
     <nav className="multilevel-nav">
       <div className="nav-top">
         <div className="nav-top-items">
-          {TOP_TABS.map((tab) => (
+          {tabs.map((tab) => (
             <a
               key={tab.key}
               href={tab.route}
@@ -213,16 +255,19 @@ export default function Nav({ activeRoute, subNav, onLogout, eperson }: Props) {
             </a>
           ))}
         </div>
-        <UserMenu
-          eperson={eperson}
-          onLogout={onLogout}
-          active={activeRoute === "profile"}
-        />
+        <UserMenu onLogout={onLogout} active={isAdminRoute} />
       </div>
+
       {subNav && subNav.length > 0 && (
         <div className="nav-sub">
           {subNav.map((item) => (
-            <a key={item.key} href={item.route} className="nav-sub-item">
+            <a
+              key={item.key}
+              href={item.route}
+              className={
+                "nav-sub-item" + (item.active ? " nav-sub-item--active" : "")
+              }
+            >
               {item.label}
             </a>
           ))}

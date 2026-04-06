@@ -4,7 +4,7 @@ import {
   type SearchResponse,
   type ParsedItemRow,
   parseItemRow,
-  hrefToPath,
+  //hrefToPath,
 } from "../api/dspace";
 import { BNFacetSection } from "../components/bn-facet-section";
 import { BNCheckboxFacet } from "../components/bn-checkbox-facet";
