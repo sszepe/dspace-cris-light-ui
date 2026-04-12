@@ -58,6 +58,20 @@ export function isCollectionsCreationEnabled(): boolean {
   );
 }
 
+/**
+ * VITE_FORM_BUILDER_ENABLED
+ *   true  (default) → "🗂 Form Builder" entry shown in the admin user-menu.
+ *   false           → Form Builder hidden for everyone, route returns dashboard.
+ *
+ * Build-time only — no Django / SiteSettings runtime toggle needed because
+ * the feature is admin-only and deployment-controlled.
+ */
+export function isFormBuilderEnabled(): boolean {
+  return (
+    String(import.meta.env.VITE_FORM_BUILDER_ENABLED ?? "true").toLowerCase() !== "false"
+  );
+}
+
 // ── Re-export SiteSettings type for call sites that only need it for communities ──
 
 export type { SiteSettings as CommunitiesSiteSettings } from "./quicklinks-config";

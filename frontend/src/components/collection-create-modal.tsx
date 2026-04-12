@@ -37,6 +37,8 @@ import {
   createCollection,
   type CollectionPayload,
 } from "../api/collection-api";
+import { DECLARED_ENTITY_TYPES } from "../profiles/plain/config/entities-config";
+import { SUBMISSION_PROCESSES } from "../profiles/plain/config/submission-config";
 
 // ── Default values ────────────────────────────────────────────────────────────
 
@@ -206,37 +208,49 @@ export default function CollectionCreateModal({
         {/* ── CRIS / submission config ── */}
         <SectionHeading>Entity &amp; submission configuration</SectionHeading>
 
-        <Labeled label="Entity type" hint="dspace.entity.type — e.g. Funding, OrgUnit, Person">
-          <input
+        <Labeled label="Entity type" hint="dspace.entity.type — selects the CRIS entity this collection holds">
+          <select
             style={inputStyle}
             value={values.entityType ?? ""}
             onChange={(e) => set("entityType", e.target.value)}
-            placeholder="Funding"
-          />
+          >
+            <option value="">— none —</option>
+            {DECLARED_ENTITY_TYPES.map((et: string) => (
+              <option key={et} value={et}>{et}</option>
+            ))}
+          </select>
         </Labeled>
 
         <Labeled
           label="Submission definition"
-          hint="cris.submission.definition — the form key used on creation"
+          hint="cris.submission.definition — the submission process used on creation"
         >
-          <input
+          <select
             style={inputStyle}
             value={values.submissionDefinition ?? ""}
             onChange={(e) => set("submissionDefinition", e.target.value)}
-            placeholder="funding"
-          />
+          >
+            <option value="">— none —</option>
+            {Object.keys(SUBMISSION_PROCESSES).map((name) => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
         </Labeled>
 
         <Labeled
           label="Submission definition (correction)"
-          hint="cris.submission.definition-correction — the form key used on edit"
+          hint="cris.submission.definition-correction — the submission process used on edit"
         >
-          <input
+          <select
             style={inputStyle}
             value={values.submissionDefinitionCorrection ?? ""}
             onChange={(e) => set("submissionDefinitionCorrection", e.target.value)}
-            placeholder="funding-edit"
-          />
+          >
+            <option value="">— none —</option>
+            {Object.keys(SUBMISSION_PROCESSES).map((name) => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
         </Labeled>
 
         <Labeled label="Shared workspace" hint="cris.workspace.shared">

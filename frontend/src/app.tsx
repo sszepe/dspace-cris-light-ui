@@ -10,6 +10,7 @@ import { SearchPage } from "./pages/search-page";
 import { ProfilePage } from "./pages/profile-page";
 import { AdminClustersPage } from "./pages/admin-clusters";
 import { AdminSettingsPage } from "./pages/admin-settings";
+import { AdminCollectionMappingPage } from "./pages/admin-collection-mapping";
 import { QuicklinksPage } from "./pages/quicklinks-page";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { FormBuilderPage } from "./pages/form-builder";
@@ -25,6 +26,7 @@ import {
   isCommunitiesRoleManagementEnabled,
   isCollectionsCreationEnabled,
   getCommunitiesConfigSource,
+  isFormBuilderEnabled,
 } from "./config/communities-config";
 
 import "./styles/theme.css";
@@ -199,7 +201,10 @@ function AppInner() {
           ? "search"
           : route.name === "quicklinks"
             ? "quicklinks"
-            : route.name === "profile" || route.name === "adminClusters" || route.name === "adminSettings"
+            : route.name === "profile" ||
+                route.name === "adminClusters" ||
+                route.name === "adminSettings" ||
+                route.name === "adminCollectionMapping"
               ? route.name
               : route.name; // "dashboard"
 
@@ -271,8 +276,17 @@ function AppInner() {
 
       {route.name === "profile" && <ProfilePage />}
 
-      {route.name === "formBuilder" && <FormBuilderPage initialProcess={(route as any).process} />}
+      {route.name === "formBuilder" && isFormBuilderEnabled() && isAdmin && (
+        <FormBuilderPage initialProcess={(route as any).process} />
+      )}
+      {route.name === "formBuilder" && (!isFormBuilderEnabled() || !isAdmin) && <Dashboard />}
+
       {route.name === "adminClusters" && <AdminClustersPage />}
+
+      {route.name === "adminCollectionMapping" && isAdmin && (
+        <AdminCollectionMappingPage />
+      )}
+      {route.name === "adminCollectionMapping" && !isAdmin && <Dashboard />}
 
       {route.name === "adminSettings" && (
         <AdminSettingsPage

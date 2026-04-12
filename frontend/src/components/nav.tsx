@@ -2,6 +2,7 @@ import React from "react";
 import { routes } from "../navigation/hash";
 import { useAuth } from "../auth/AuthContext";
 import type { NavTab } from "../profiles/profile-config";
+import { isFormBuilderEnabled } from "../config/communities-config";
 
 type SubNavItem = { label: string; route: string; key: string; active?: boolean };
 type Props = {
@@ -193,11 +194,21 @@ function UserMenu({
 
           {isAdmin && (
             <a
+              href={routes.adminCollectionMapping}
+              onClick={() => setOpen(false)}
+              style={linkStyle as React.CSSProperties}
+            >
+              <span>🗂️</span> Collection Mapping
+            </a>
+          )}
+
+          {isAdmin && isFormBuilderEnabled() && (
+            <a
               href={routes.formBuilder}
               onClick={() => setOpen(false)}
               style={linkStyle as React.CSSProperties}
             >
-              <span>🗂</span> Form Builder
+              <span>📋</span> Form Builder
             </a>
           )}
 
@@ -236,6 +247,7 @@ export default function Nav({ activeRoute, subNav, onLogout, showQuicklinks, nav
     activeRoute === "profile" ||
     activeRoute === "adminClusters" ||
     activeRoute === "adminSettings" ||
+    activeRoute === "adminCollectionMapping" ||
     activeRoute === "formBuilder";
 
   return (

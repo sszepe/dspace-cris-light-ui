@@ -1,0 +1,29 @@
+# ── Profile ───────────────────────────────────────────────────────────────────
+VITE_PROFILE=plain
+
+# ── DSpace REST backend ───────────────────────────────────────────────────────
+# Proxied through Vite dev server → localhost:8080
+VITE_API_BASE_URL=/server
+
+# ── Django config API ─────────────────────────────────────────────────────────
+# IMPORTANT: No trailing slash. django-client.ts appends paths like "/site-settings/"
+# so the full URL becomes /api/dspace-config/site-settings/ ✓
+VITE_DJANGO_CONFIG_API_BASE_URL=/api/dspace-config
+
+# ── Config sources ────────────────────────────────────────────────────────────
+VITE_CLUSTER_CONFIG_SOURCE=django
+VITE_QUICKLINKS_CONFIG_SOURCE=django
+
+# ── Feature flags ─────────────────────────────────────────────────────────────
+VITE_QUICKLINKS_ENABLED=true
+VITE_QUICKLINKS_ADMIN_ONLY=false
+VITE_COMMUNITIES_CREATION_ENABLED=true
+VITE_COMMUNITIES_ROLE_MANAGEMENT_ENABLED=true
+VITE_COLLECTIONS_CREATION_ENABLED=true
+VITE_FORM_BUILDER_ENABLED=true
+
+# ── End-user agreement & privacy statement ────────────────────────────────────
+VITE_ENABLE_END_USER_AGREEMENT=true
+VITE_ENABLE_PRIVACY_STATEMENT=true
+
+VITE_COLLECTION_MAPPING_SOURCE=django

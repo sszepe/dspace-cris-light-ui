@@ -6,6 +6,7 @@ export type Route =
   | { name: "profile" }
   | { name: "adminClusters" }
   | { name: "adminSettings" }
+  | { name: "adminCollectionMapping" }
   | { name: "formBuilder"; process?: string }
   | { name: "quicklinks"; preset?: string }
   | { name: "collection"; collectionId: string }
@@ -54,8 +55,9 @@ export function parseHash(): Route {
       return { name: "profile" };
 
     case "admin":
-      if (parts[1] === "clusters")     return { name: "adminClusters" };
-      if (parts[1] === "settings")     return { name: "adminSettings" };
+      if (parts[1] === "clusters")            return { name: "adminClusters" };
+      if (parts[1] === "settings")            return { name: "adminSettings" };
+      if (parts[1] === "collection-mapping")  return { name: "adminCollectionMapping" };
       if (parts[1] === "form-builder") {
         return { name: "formBuilder", process: parts[2] ? decodeURIComponent(parts[2]) : undefined };
       }
@@ -88,6 +90,7 @@ export const routes = {
   quicklinksPreset: (preset: string) => `#/quicklinks/${encodeURIComponent(preset)}`,
   adminClusters: "#/admin/clusters",
   adminSettings: "#/admin/settings",
+  adminCollectionMapping: "#/admin/collection-mapping",
   formBuilder: "#/admin/form-builder",
   formBuilderProcess: (process: string) => `#/admin/form-builder/${encodeURIComponent(process)}`,
   login: "#/login",
